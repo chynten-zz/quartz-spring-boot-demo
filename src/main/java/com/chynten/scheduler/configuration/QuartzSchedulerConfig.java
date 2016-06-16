@@ -1,7 +1,7 @@
 package com.chynten.scheduler.configuration;
 
+import com.chynten.scheduler.configuration.trigger.CustomCronTriggerFactoryBean;
 import com.chynten.scheduler.quartz.job.TestJob;
-import com.chynten.scheduler.quartz.trigger.CustomCronTriggerFactoryBean;
 import org.joda.time.LocalDateTime;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
@@ -19,7 +19,6 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.Properties;
 
 @Configuration
@@ -66,25 +65,14 @@ public class QuartzSchedulerConfig {
     }
 
     public Trigger sampleJobTrigger() {
-        /*SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
-        factoryBean.setJobDetail(sampleJobDetail());
-        factoryBean.setStartDelay(0L);
-        factoryBean.setRepeatInterval(5000);
-        factoryBean.setRepeatCount(SimpleTrigger.REPEAT_INDEFINITELY);
-        // in case of misfire, ignore all missed triggers and continue :
-        factoryBean.setMisfireInstruction(SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_REMAINING_COUNT);
-        factoryBean.setName("test-trigger");
-        factoryBean.afterPropertiesSet();*/
-
-        System.out.println("wait for 5 min from: " + new Date());
 
         CustomCronTriggerFactoryBean factoryBean = new CustomCronTriggerFactoryBean();
         factoryBean.setJobDetail(sampleJobDetail());
         factoryBean.setName("test-trigger");
-        factoryBean.setStartTime(LocalDateTime.now().plusMinutes(2).toDate());
-        factoryBean.setEndTime(LocalDateTime.now().plusMinutes(5).toDate());
-        factoryBean.setCronExpression("*/30 * * ? * *");
-        factoryBean.setMisfireInstruction(SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT);
+        factoryBean.setStartTime(LocalDateTime.now().toDate());
+        factoryBean.setEndTime(LocalDateTime.now().plusMinutes(30).toDate());
+        factoryBean.setCronExpression("0/10 * * * * ?");
+        factoryBean.setMisfireInstruction(SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
 
         try {
             factoryBean.afterPropertiesSet();
